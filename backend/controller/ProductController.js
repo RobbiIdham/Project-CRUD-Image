@@ -26,10 +26,13 @@ export const getProductById = async (req, res) => {
 };
 
 export const saveProduct = (req, res) => {
+  console.log(req.body);
+  console.log(req.files);
   if (req.files === null)
     return res.status(400).json({ mssg: "No file uploaded" });
 
   const name = req.body.title;
+  const description = req.body.description;
   const file = req.files.file;
   const fileSize = file.data.length;
   const ext = path.extname(file.name);
@@ -46,7 +49,12 @@ export const saveProduct = (req, res) => {
     if (err) return res.status(500).json({ msg: err.message });
 
     try {
-      await Product.create({ name: name, image: fileName, url: url });
+      await Product.create({
+        name: name,
+        description: description,
+        image: fileName,
+        url: url,
+      });
       res.status(201).json({ msg: "Product Created Successfuly" });
     } catch (error) {
       console.log(error.message);
@@ -88,12 +96,13 @@ export const updateProduct = async (req, res) => {
       if (err) return res.status(500).json({ msg: err.message });
     });
   }
-  const name = req.body.title;
+  const name = req.body.name || product.name;
+  const description = req.body.description || product.description;
   const url = `${req.protocol}://${req.get("host")}/images/${fileName}`;
 
   try {
     await Product.update(
-      { name: name, image: fileName, url: url },
+      { name: name, description: description, image: fileName, url: url },
       {
         where: {
           id: req.params.id,

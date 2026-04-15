@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 
 function EditProduct() {
   const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState("");
   const { id } = useParams();
@@ -12,6 +13,7 @@ function EditProduct() {
   const getProductById = useCallback(async () => {
     const response = await axios.get(`http://localhost:5000/products/${id}`);
     setTitle(response.data.name);
+    setDescription(response.data.description);
     setFile(response.data.url);
     setPreview(response.data.url);
   }, [id]);
@@ -33,7 +35,8 @@ function EditProduct() {
     if (file instanceof File) {
       formData.append("file", file);
     }
-    formData.append("title", title);
+    formData.append("name", title);
+    formData.append("description", description);
 
     try {
       await axios.patch(`http://localhost:5000/products/${id}`, formData, {
@@ -59,6 +62,19 @@ function EditProduct() {
                 placeholder="Product Name"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="field">
+            <label className="label">Product Description</label>
+            <div className="control">
+              <input
+                type="text"
+                className="input"
+                placeholder="Product Description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
               />
             </div>
           </div>

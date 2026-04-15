@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 function AddProduct() {
   const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState("");
   const navigate = useNavigate();
@@ -20,18 +21,15 @@ function AddProduct() {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("title", title);
+    formData.append("description", description);
 
     try {
-        await axios.post("http://localhost:5000/products", formData, {
-        headers: {
-            "Content-Type": "multipart/form-data",
-        },
-        });
-        navigate("/");  
+      await axios.post("http://localhost:5000/products", formData);
+      navigate("/");
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
-  }
+  };
   return (
     <div className="columns is-centered mt-5">
       <div className="column is-half">
@@ -45,6 +43,19 @@ function AddProduct() {
                 placeholder="Product Name"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
+          </div>
+          {/* Add Description */}
+          <div className="field">
+            <label className="label">Product Descriptions</label>
+            <div className="control">
+              <input
+                type="text"
+                className="input"
+                placeholder="Product Description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
               />
             </div>
           </div>
@@ -75,12 +86,11 @@ function AddProduct() {
             <p>No image selected</p>
           )}
 
-
           <div className="field">
             <div className="control">
-                <button type="submit" className="button is-success mt-5">
-                  Add Product
-                </button>
+              <button type="submit" className="button is-success mt-5">
+                Add Product
+              </button>
             </div>
           </div>
         </form>
